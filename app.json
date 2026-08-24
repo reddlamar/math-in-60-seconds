@@ -18,7 +18,10 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.reddlamar.mathin60seconds"
+      "package": "com.reddlamar.mathin60seconds",
+      "permissions": [
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +35,12 @@
           "enableBackgroundPlayback": false
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "10ed2607-4f20-45bd-a08a-00976efc506a"
+      }
+    },
+    "owner": "lredd"
   }
 }
