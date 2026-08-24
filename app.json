@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "math-in-60-seconds",
+    "name": "Math In 60 Seconds",
     "slug": "math-in-60-seconds",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,29 +8,39 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.math-in-60-seconds"
+      "bundleIdentifier": "com.reddlamar.mathin60seconds"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#5B4FCF",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
+      "package": "com.reddlamar.mathin60seconds",
       "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS",
-        "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
-      ],
-      "package": "com.anonymous.mathin60seconds"
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-audio"
-    ]
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "10ed2607-4f20-45bd-a08a-00976efc506a"
+      }
+    },
+    "owner": "lredd"
   }
 }
