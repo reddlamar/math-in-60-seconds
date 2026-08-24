@@ -1,0 +1,27 @@
+export type Operation = 'addition' | 'subtraction' | 'multiplication' | 'division';
+
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
+export type GameState = {
+  score: number;
+  streak: number;
+};
+
+export type Problem = {
+  id: string;
+  question: string;
+  answer: number;
+  choices: number[];
+};
+
+export type ProblemGenerator = (difficulty: Difficulty) => Problem;
+
+export type ScoreEntry = {
+  id: string;
+  name: string;
+  score: number;
+  operation: Operation;
+  createdAt: number;
+};
+
+export type GameStatus = 'idle' | 'playing' | 'ended';
