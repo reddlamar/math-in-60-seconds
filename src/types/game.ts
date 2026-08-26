@@ -24,4 +24,4 @@ export type ScoreEntry = {
   createdAt: number;
 };
 
-export type GameStatus = 'idle' | 'playing' | 'ended';
+export type GameStatus = 'idle' | 'playing' | 'paused' | 'ended';

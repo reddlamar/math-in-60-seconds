@@ -1,51 +1,60 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
-import { light } from '../theme/tokens';
+import { Platform, StyleSheet, Text } from 'react-native';
+import { AnimatedPressable } from './AnimatedPressable';
 
 type AnswerButtonProps = {
   value: number;
   onPress: (value: number) => void;
   disabled?: boolean;
+  color?: string;
 };
 
-export function AnswerButton({ value, onPress, disabled }: AnswerButtonProps) {
+export function AnswerButton({ value, onPress, disabled, color = '#5B4FCF' }: AnswerButtonProps) {
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       accessibilityLabel={`Answer ${value}`}
       disabled={disabled}
       onPress={() => onPress(value)}
-      style={({ pressed }) => [
-        styles.button,
-        { opacity: pressed ? 0.7 : 1 },
-        disabled && styles.disabled,
-      ]}
+      wrapperStyle={styles.wrapper}
+      style={[styles.button, { backgroundColor: color }, disabled && styles.disabled]}
     >
       <Text testID="answer-choice" style={styles.label}>
         {value}
       </Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    margin: 8,
+  },
   button: {
-    minWidth: 88,
-    minHeight: 64,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: light.accent,
-    backgroundColor: light.surface,
+    minWidth: 92,
+    minHeight: 72,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 8,
+    paddingHorizontal: 12,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.16,
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   disabled: {
     opacity: 0.4,
   },
   label: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: light.textPrimary,
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
 });

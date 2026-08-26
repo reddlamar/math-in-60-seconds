@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AnimatedPressable } from '../components/AnimatedPressable';
 import { AnswerButton } from '../components/AnswerButton';
 import { TimerBar } from '../components/TimerBar';
 import { StreakIndicator } from '../components/StreakIndicator';
 import { NameEntryModal } from '../components/NameEntryModal';
 import { useGameEngine } from '../game/useGameEngine';
-import { light } from '../theme/tokens';
+import { choiceColors, light, operationColors } from '../theme/tokens';
 import type { GameScreenProps } from '../navigation/types';
 import type { ScoreEntry } from '../types/game';
 
@@ -27,6 +28,10 @@ export function GameScreen({ navigation, route }: GameScreenProps) {
     engine.start();
   };
 
+  const handleRestart = () => {
+    engine.start();
+  };
+
   const handleViewLeaderboard = () => {
     navigation.navigate('Leaderboard', { operation });
   };
@@ -35,19 +40,23 @@ export function GameScreen({ navigation, route }: GameScreenProps) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.summary}>
+          <Text style={styles.summaryEmoji}>🎉</Text>
           <Text style={styles.summaryTitle}>Nice work, {savedEntry.name}!</Text>
-          <Text style={styles.summaryScore}>{savedEntry.score} points</Text>
-          <Pressable
+          <Text style={[styles.summaryScore, { color: operationColors[operation] }]}>
+            {savedEntry.score} points
+          </Text>
+          <AnimatedPressable
             testID="play-again-button"
             accessibilityRole="button"
-            style={styles.primaryButton}
+            wrapperStyle={styles.primaryButtonWrapper}
+            style={[styles.primaryButton, { backgroundColor: operationColors[operation] }]}
             onPress={handlePlayAgain}
           >
             <Text style={styles.primaryButtonLabel}>Play Again</Text>
-          </Pressable>
-          <Pressable accessibilityRole="button" onPress={handleViewLeaderboard}>
+          </AnimatedPressable>
+          <AnimatedPressable accessibilityRole="button" onPress={handleViewLeaderboard}>
             <Text style={styles.secondaryButtonLabel}>View Leaderboard</Text>
-          </Pressable>
+          </AnimatedPressable>
         </View>
       </SafeAreaView>
     );
@@ -58,28 +67,72 @@ export function GameScreen({ navigation, route }: GameScreenProps) {
       <View style={styles.topBar}>
         <TimerBar timeLeft={engine.timeLeft} duration={GAME_DURATION_MS} />
         <View style={styles.statsRow}>
-          <Text testID="score-value" style={styles.score}>
+          <Text testID="score-value" style={[styles.score, { color: operationColors[operation] }]}>
             {engine.score}
           </Text>
+          <View style={styles.controls}>
+            {(engine.status === 'playing' || engine.status === 'paused') && (
+              <AnimatedPressable
+                testID="restart-button"
+                accessibilityRole="button"
+                accessibilityLabel="Restart game"
+                wrapperStyle={styles.controlButtonWrapper}
+                style={[styles.controlButton, styles.restartButton]}
+                onPress={handleRestart}
+              >
+                <Text style={styles.controlIcon}>↻</Text>
+              </AnimatedPressable>
+            )}
+            {engine.status === 'playing' && (
+              <AnimatedPressable
+                testID="pause-button"
+                accessibilityRole="button"
+                accessibilityLabel="Pause game"
+                style={[styles.controlButton, { backgroundColor: operationColors[operation] }]}
+                onPress={engine.pause}
+              >
+                <Text style={styles.controlIcon}>⏸</Text>
+              </AnimatedPressable>
+            )}
+          </View>
           <StreakIndicator streak={engine.streak} />
         </View>
       </View>
 
       {engine.problem && (
         <View style={styles.problemArea}>
-          <Text testID="problem-question" style={styles.question}>
-            {engine.problem.question}
-          </Text>
-          <View style={styles.choices}>
-            {engine.problem.choices.map((choice) => (
-              <AnswerButton
-                key={choice}
-                value={choice}
-                onPress={engine.submitAnswer}
-                disabled={engine.status !== 'playing'}
-              />
-            ))}
-          </View>
+          {engine.status === 'paused' ? (
+            <View>
+              <Text style={styles.pausedEmoji}>⏸</Text>
+              <Text style={styles.pausedTitle}>Paused</Text>
+              <AnimatedPressable
+                testID="resume-button"
+                accessibilityRole="button"
+                wrapperStyle={styles.primaryButtonWrapper}
+                style={[styles.primaryButton, { backgroundColor: operationColors[operation] }]}
+                onPress={engine.resume}
+              >
+                <Text style={styles.primaryButtonLabel}>Resume</Text>
+              </AnimatedPressable>
+            </View>
+          ) : (
+            <>
+              <Text testID="problem-question" style={styles.question}>
+                {engine.problem.question}
+              </Text>
+              <View style={styles.choices}>
+                {engine.problem.choices.map((choice, index) => (
+                  <AnswerButton
+                    key={choice}
+                    value={choice}
+                    color={choiceColors[index % choiceColors.length]}
+                    onPress={engine.submitAnswer}
+                    disabled={engine.status !== 'playing'}
+                  />
+                ))}
+              </View>
+            </>
+          )}
         </View>
       )}
 
@@ -109,17 +162,59 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   score: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: '800',
-    color: light.textPrimary,
+  },
+  controls: {
+    flexDirection: 'row',
+  },
+  controlButtonWrapper: {
+    marginRight: 10,
+  },
+  controlButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+  },
+  restartButton: {
+    backgroundColor: '#8B95A1',
+  },
+  controlIcon: {
+    fontSize: 18,
+    color: '#FFFFFF',
   },
   problemArea: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  pausedEmoji: {
+    fontSize: 56,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  pausedTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: light.textPrimary,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
   question: {
-    fontSize: 40,
+    fontSize: 44,
     fontWeight: '800',
     color: light.textPrimary,
     marginBottom: 24,
@@ -135,6 +230,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
   },
+  summaryEmoji: {
+    fontSize: 56,
+    marginBottom: 8,
+  },
   summaryTitle: {
     fontSize: 24,
     fontWeight: '800',
@@ -144,15 +243,26 @@ const styles = StyleSheet.create({
   summaryScore: {
     fontSize: 40,
     fontWeight: '800',
-    color: light.accent,
     marginBottom: 32,
   },
-  primaryButton: {
-    backgroundColor: light.accent,
-    borderRadius: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 32,
+  primaryButtonWrapper: {
     marginBottom: 16,
+  },
+  primaryButton: {
+    borderRadius: 24,
+    paddingVertical: 16,
+    paddingHorizontal: 40,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.18,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
   primaryButtonLabel: {
     color: '#FFFFFF',

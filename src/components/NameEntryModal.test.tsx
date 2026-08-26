@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, act } from '@testing-library/react-native';
 import { NameEntryModal } from './NameEntryModal';
 import * as scoresRepository from '../storage/scoresRepository';
 
@@ -35,18 +35,73 @@ describe('NameEntryModal', () => {
     expect(onSaved).toHaveBeenCalled();
   });
 
-  it('defaults to "Player" when the name is left blank', async () => {
+  it('shows a required error and does not save when the name is left blank', async () => {
     const onSaved = jest.fn();
-    const { getByText } = await render(
+    const { getByText, queryByText } = await render(
       <NameEntryModal visible score={3} operation="division" onSaved={onSaved} />
     );
 
+    expect(queryByText('Name is required')).toBeNull();
+
     await fireEvent.press(getByText('Save'));
 
+    expect(getByText('Name is required')).toBeTruthy();
+    expect(scoresRepository.addScore).not.toHaveBeenCalled();
+    expect(onSaved).not.toHaveBeenCalled();
+  });
+
+  it('shows a required error when the name is only whitespace', async () => {
+    const { getByPlaceholderText, getByText } = await render(
+      <NameEntryModal visible score={3} operation="division" onSaved={jest.fn()} />
+    );
+
+    await fireEvent.changeText(getByPlaceholderText('Your name'), '   ');
+    await fireEvent.press(getByText('Save'));
+
+    expect(getByText('Name is required')).toBeTruthy();
+    expect(scoresRepository.addScore).not.toHaveBeenCalled();
+  });
+
+  it('clears the required error once the player starts typing a name', async () => {
+    const { getByPlaceholderText, getByText, queryByText } = await render(
+      <NameEntryModal visible score={3} operation="division" onSaved={jest.fn()} />
+    );
+
+    await fireEvent.press(getByText('Save'));
+    expect(getByText('Name is required')).toBeTruthy();
+
+    await fireEvent.changeText(getByPlaceholderText('Your name'), 'A');
+    expect(queryByText('Name is required')).toBeNull();
+  });
+
+  it('disables Save while a save is in flight, so a second press cannot start a duplicate save', async () => {
+    let resolveSave: () => void = () => {};
+    jest.mocked(scoresRepository.addScore).mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveSave = resolve;
+      })
+    );
+    const onSaved = jest.fn();
+    const { getByPlaceholderText, getByTestId } = await render(
+      <NameEntryModal visible score={7} operation="addition" onSaved={onSaved} />
+    );
+
+    await fireEvent.changeText(getByPlaceholderText('Your name'), 'Ada');
+
+    fireEvent.press(getByTestId('save-button'));
     await waitFor(() => {
-      expect(scoresRepository.addScore).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'Player' })
-      );
+      expect(getByTestId('save-button').props.accessibilityState.disabled).toBe(true);
+    });
+
+    // A press while disabled must not start a second save.
+    fireEvent.press(getByTestId('save-button'));
+    expect(scoresRepository.addScore).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolveSave();
+    });
+    await waitFor(() => {
+      expect(onSaved).toHaveBeenCalledTimes(1);
     });
   });
 
