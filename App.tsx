@@ -55,7 +55,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   splash: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: '#0A1F44',
     alignItems: 'center',
     justifyContent: 'center',
