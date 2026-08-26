@@ -54,6 +54,39 @@ describe('useGameTimer', () => {
     expect(onExpire).toHaveBeenCalledTimes(1);
   });
 
+  it('stops counting down while paused and resumes from where it left off', async () => {
+    const onExpire = jest.fn();
+    const { result } = await renderHook(() => useGameTimer(60000, onExpire));
+
+    await act(async () => {
+      result.current.start();
+    });
+    await act(async () => {
+      jest.advanceTimersByTime(10000);
+    });
+    const timeLeftAtPause = result.current.timeLeft;
+
+    await act(async () => {
+      result.current.pause();
+    });
+    expect(result.current.isRunning).toBe(false);
+
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(result.current.timeLeft).toBe(timeLeftAtPause);
+
+    await act(async () => {
+      result.current.resume();
+    });
+    expect(result.current.isRunning).toBe(true);
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(result.current.timeLeft).toBeLessThan(timeLeftAtPause);
+  });
+
   it('resets to the full duration and stops when reset is called', async () => {
     const onExpire = jest.fn();
     const { result } = await renderHook(() => useGameTimer(1000, onExpire));

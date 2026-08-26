@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AnimatedPressable } from '../components/AnimatedPressable';
 import { getTopScores } from '../storage/scoresRepository';
-import { light } from '../theme/tokens';
+import { light, operationColors } from '../theme/tokens';
 import type { LeaderboardScreenProps } from '../navigation/types';
 import type { Operation, ScoreEntry } from '../types/game';
 
-const FILTERS: { operation?: Operation; label: string }[] = [
-  { operation: undefined, label: 'All' },
-  { operation: 'addition', label: '+' },
-  { operation: 'subtraction', label: '−' },
-  { operation: 'multiplication', label: '×' },
-  { operation: 'division', label: '÷' },
+const FILTERS: { operation?: Operation; label: string; color: string }[] = [
+  { operation: undefined, label: 'All', color: light.accent },
+  { operation: 'addition', label: '+', color: operationColors.addition },
+  { operation: 'subtraction', label: '−', color: operationColors.subtraction },
+  { operation: 'multiplication', label: '×', color: operationColors.multiplication },
+  { operation: 'division', label: '÷', color: operationColors.division },
 ];
 
 const MEDALS = ['🥇', '🥈', '🥉'];
@@ -35,7 +36,7 @@ export function LeaderboardScreen({ navigation, route }: LeaderboardScreenProps)
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Leaderboard</Text>
+        <Text style={styles.title}>🏆 Leaderboard</Text>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Go to home screen"
@@ -46,20 +47,31 @@ export function LeaderboardScreen({ navigation, route }: LeaderboardScreenProps)
       </View>
 
       <View style={styles.filterRow}>
-        {FILTERS.map(({ operation: filterOp, label }) => (
-          <Pressable
-            key={label}
-            accessibilityRole="button"
-            style={[styles.filterTab, operation === filterOp && styles.filterTabActive]}
-            onPress={() => setOperation(filterOp)}
-          >
-            <Text style={styles.filterLabel}>{label}</Text>
-          </Pressable>
-        ))}
+        {FILTERS.map(({ operation: filterOp, label, color }) => {
+          const active = operation === filterOp;
+          return (
+            <AnimatedPressable
+              key={label}
+              accessibilityRole="button"
+              wrapperStyle={styles.filterTabWrapper}
+              style={[
+                styles.filterTab,
+                { borderColor: color },
+                active && { backgroundColor: color },
+              ]}
+              onPress={() => setOperation(filterOp)}
+            >
+              <Text style={[styles.filterLabel, { color: active ? '#FFFFFF' : color }]}>
+                {label}
+              </Text>
+            </AnimatedPressable>
+          );
+        })}
       </View>
 
       {scores.length === 0 ? (
         <View style={styles.emptyState}>
+          <Text style={styles.emptyEmoji}>🎯</Text>
           <Text style={styles.emptyText}>No scores yet — be the first!</Text>
         </View>
       ) : (
@@ -67,10 +79,12 @@ export function LeaderboardScreen({ navigation, route }: LeaderboardScreenProps)
           data={scores}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
-            <View style={styles.row}>
+            <View style={[styles.row, { borderColor: operationColors[item.operation] }]}>
               <Text style={styles.rank}>{MEDALS[index] ?? `${index + 1}.`}</Text>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.score}>{item.score}</Text>
+              <Text style={[styles.score, { color: operationColors[item.operation] }]}>
+                {item.score}
+              </Text>
             </View>
           )}
         />
@@ -90,65 +104,69 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '800',
     color: light.textPrimary,
   },
   homeIcon: {
-    fontSize: 26,
+    fontSize: 28,
   },
   filterRow: {
     flexDirection: 'row',
     marginBottom: 16,
   },
-  filterTab: {
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: light.border,
+  filterTabWrapper: {
     marginRight: 8,
   },
-  filterTabActive: {
-    backgroundColor: light.accent,
-    borderColor: light.accent,
+  filterTab: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 2,
   },
   filterLabel: {
-    color: light.textPrimary,
-    fontWeight: '600',
+    fontWeight: '800',
+    fontSize: 16,
   },
   emptyState: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  emptyEmoji: {
+    fontSize: 48,
+    marginBottom: 8,
+  },
   emptyText: {
     fontSize: 16,
     color: light.textSecondary,
+    fontWeight: '600',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: light.border,
+    backgroundColor: light.surface,
+    borderRadius: 18,
+    borderWidth: 2,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 10,
   },
   rank: {
     width: 36,
-    fontSize: 16,
+    fontSize: 20,
   },
   name: {
     flex: 1,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: light.textPrimary,
   },
   score: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: light.accent,
+    fontSize: 18,
+    fontWeight: '800',
   },
 });

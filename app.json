@@ -11,12 +11,7 @@
       "bundleIdentifier": "com.reddlamar.mathin60seconds"
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#5B4FCF",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      },
+      "icon": "./assets/icon-android.png",
       "predictiveBackGestureEnabled": false,
       "package": "com.reddlamar.mathin60seconds",
       "permissions": [
@@ -33,6 +28,19 @@
           "microphonePermission": false,
           "recordAudioAndroid": false,
           "enableBackgroundPlayback": false
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0A1F44",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 340,
+          "resizeMode": "contain",
+          "android": {
+            "image": "./assets/splash-icon-android.png",
+            "imageWidth": 180
+          }
         }
       ]
     ],

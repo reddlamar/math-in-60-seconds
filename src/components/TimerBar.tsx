@@ -32,19 +32,20 @@ const styles = StyleSheet.create({
   },
   track: {
     width: '100%',
-    height: 12,
-    borderRadius: 6,
+    height: 16,
+    borderRadius: 8,
     backgroundColor: light.border,
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
-    backgroundColor: light.accent,
+    borderRadius: 8,
+    backgroundColor: '#22B8CF',
   },
   seconds: {
-    marginTop: 4,
-    fontSize: 20,
-    fontWeight: '700',
-    color: light.textPrimary,
+    marginTop: 6,
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#22B8CF',
   },
 });

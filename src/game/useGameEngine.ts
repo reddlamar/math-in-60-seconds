@@ -14,6 +14,8 @@ export type UseGameEngineResult = {
   status: GameStatus;
   start: () => void;
   submitAnswer: (value: number) => void;
+  pause: () => void;
+  resume: () => void;
 };
 
 export function useGameEngine(
@@ -49,6 +51,22 @@ export function useGameEngine(
     [status, problem, generator, difficulty]
   );
 
+  const pause = useCallback(() => {
+    if (status !== 'playing') {
+      return;
+    }
+    timer.pause();
+    setStatus('paused');
+  }, [status, timer]);
+
+  const resume = useCallback(() => {
+    if (status !== 'paused') {
+      return;
+    }
+    timer.resume();
+    setStatus('playing');
+  }, [status, timer]);
+
   return {
     problem,
     score: gameState.score,
@@ -57,5 +75,7 @@ export function useGameEngine(
     status,
     start,
     submitAnswer,
+    pause,
+    resume,
   };
 }

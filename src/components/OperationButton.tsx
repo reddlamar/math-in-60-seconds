@@ -1,6 +1,7 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
-import { light } from '../theme/tokens';
+import { Platform, StyleSheet, Text } from 'react-native';
+import { AnimatedPressable } from './AnimatedPressable';
+import { operationColors } from '../theme/tokens';
 import type { Operation } from '../types/game';
 
 type OperationButtonProps = {
@@ -12,39 +13,51 @@ type OperationButtonProps = {
 
 export function OperationButton({ operation, symbol, label, onPress }: OperationButtonProps) {
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       accessibilityLabel={label}
+      wrapperStyle={styles.wrapper}
+      style={[styles.button, { backgroundColor: operationColors[operation] }]}
       onPress={() => onPress(operation)}
-      style={({ pressed }) => [styles.button, { opacity: pressed ? 0.7 : 1 }]}
     >
       <Text style={styles.symbol}>{symbol}</Text>
       <Text style={styles.label}>{label}</Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flexBasis: '42%',
+    maxWidth: 220,
+    aspectRatio: 1,
+  },
   button: {
-    width: 140,
-    height: 140,
-    borderRadius: 24,
-    backgroundColor: light.surface,
-    borderWidth: 2,
-    borderColor: light.accent,
+    flex: 1,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.18,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
   symbol: {
-    fontSize: 40,
+    fontSize: 52,
     fontWeight: '800',
-    color: light.accent,
+    color: '#FFFFFF',
   },
   label: {
-    marginTop: 6,
-    fontSize: 14,
-    fontWeight: '600',
-    color: light.textPrimary,
+    marginTop: 8,
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
 });

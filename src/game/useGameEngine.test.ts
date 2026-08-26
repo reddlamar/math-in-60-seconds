@@ -85,6 +85,51 @@ describe('useGameEngine', () => {
     expect(result.current.timeLeft).toBe(0);
   });
 
+  it('pauses and resumes, ignoring answers while paused', async () => {
+    const { result } = await renderHook(() => useGameEngine('addition'));
+    await act(async () => {
+      result.current.start();
+    });
+
+    await act(async () => {
+      result.current.pause();
+    });
+    expect(result.current.status).toBe('paused');
+    const timeLeftAtPause = result.current.timeLeft;
+
+    await act(async () => {
+      result.current.submitAnswer(result.current.problem!.answer);
+    });
+    expect(result.current.score).toBe(0);
+
+    await act(async () => {
+      jest.advanceTimersByTime(5000);
+    });
+    expect(result.current.timeLeft).toBe(timeLeftAtPause);
+
+    await act(async () => {
+      result.current.resume();
+    });
+    expect(result.current.status).toBe('playing');
+  });
+
+  it('ignores pause when not playing and resume when not paused', async () => {
+    const { result } = await renderHook(() => useGameEngine('addition'));
+
+    await act(async () => {
+      result.current.pause();
+    });
+    expect(result.current.status).toBe('idle');
+
+    await act(async () => {
+      result.current.start();
+    });
+    await act(async () => {
+      result.current.resume();
+    });
+    expect(result.current.status).toBe('playing');
+  });
+
   it('resets score and streak when starting a new round', async () => {
     const { result } = await renderHook(() => useGameEngine('addition'));
     await act(async () => {
