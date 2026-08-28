@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Math In 60 Seconds",
-    "slug": "math-in-60-seconds",
+    "name": "Sunlit Math",
+    "slug": "sunlit-math",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

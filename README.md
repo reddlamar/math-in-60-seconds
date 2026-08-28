@@ -1,4 +1,4 @@
-# Math In 60 Seconds
+# Sunlit Math
 
 A fast-paced arithmetic game for kids: you get 60 seconds and as many problems
 as you can solve. Pick addition, subtraction, multiplication, or division,
