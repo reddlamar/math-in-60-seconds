@@ -111,13 +111,13 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 12,
   },
   headerBanner: {
-    width: 252,
-    height: 36,
+    flex: 1,
+    aspectRatio: 7,
+    marginRight: 16,
   },
   leaderboardIcon: {
     fontSize: 28,
