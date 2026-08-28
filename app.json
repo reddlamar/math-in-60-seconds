@@ -45,7 +45,8 @@
             "imageWidth": 180
           }
         }
-      ]
+      ],
+      "expo-iap"
     ],
     "extra": {
       "eas": {

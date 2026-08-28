@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { ThemeProvider } from './src/context/ThemeContext';
 import { SettingsProvider } from './src/context/SettingsContext';
+import { PurchaseProvider } from './src/purchases/PurchaseContext';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -36,8 +37,10 @@ export default function App() {
     <SafeAreaProvider>
       <ThemeProvider>
         <SettingsProvider>
-          <RootNavigator />
-          <StatusBar style="auto" />
+          <PurchaseProvider>
+            <RootNavigator />
+            <StatusBar style="auto" />
+          </PurchaseProvider>
         </SettingsProvider>
       </ThemeProvider>
       {isSplashVisible && (

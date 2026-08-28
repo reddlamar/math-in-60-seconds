@@ -3,7 +3,10 @@ import { Image, Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnimatedPressable } from '../components/AnimatedPressable';
 import { OperationButton } from '../components/OperationButton';
+import { UnlockModal } from '../components/UnlockModal';
 import { getTopScores } from '../storage/scoresRepository';
+import { isOperationLocked } from '../purchases/entitlements';
+import { usePurchase } from '../purchases/PurchaseContext';
 import { light, operationColors } from '../theme/tokens';
 import type { HomeScreenProps } from '../navigation/types';
 import type { Operation, ScoreEntry } from '../types/game';
@@ -17,6 +20,8 @@ const OPERATIONS: { operation: Operation; symbol: string; label: string }[] = [
 
 export function HomeScreen({ navigation }: Readonly<HomeScreenProps>) {
   const [topScore, setTopScore] = useState<ScoreEntry | null>(null);
+  const [isUnlockModalVisible, setIsUnlockModalVisible] = useState(false);
+  const { isUnlocked } = usePurchase();
 
   useEffect(() => {
     let cancelled = false;
@@ -29,6 +34,14 @@ export function HomeScreen({ navigation }: Readonly<HomeScreenProps>) {
       cancelled = true;
     };
   }, []);
+
+  const handleSelectOperation = (operation: Operation) => {
+    if (isOperationLocked(operation, isUnlocked)) {
+      setIsUnlockModalVisible(true);
+      return;
+    }
+    navigation.navigate('Game', { operation });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,7 +67,8 @@ export function HomeScreen({ navigation }: Readonly<HomeScreenProps>) {
               operation={operation}
               symbol={symbol}
               label={label}
-              onPress={(op) => navigation.navigate('Game', { operation: op })}
+              locked={isOperationLocked(operation, isUnlocked)}
+              onPress={handleSelectOperation}
             />
           ))}
         </View>
@@ -80,6 +94,10 @@ export function HomeScreen({ navigation }: Readonly<HomeScreenProps>) {
           )}
         </AnimatedPressable>
       </View>
+      <UnlockModal
+        visible={isUnlockModalVisible}
+        onClose={() => setIsUnlockModalVisible(false)}
+      />
     </SafeAreaView>
   );
 }
