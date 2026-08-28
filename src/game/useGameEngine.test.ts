@@ -14,6 +14,7 @@ describe('useGameEngine', () => {
     const { result } = await renderHook(() => useGameEngine('addition'));
     expect(result.current.status).toBe('idle');
     expect(result.current.timeLeft).toBe(60000);
+    expect(result.current.duration).toBe(60000);
     expect(result.current.problem).toBeNull();
     expect(result.current.score).toBe(0);
     expect(result.current.streak).toBe(0);

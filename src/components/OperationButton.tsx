@@ -1,7 +1,8 @@
 import React from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { AnimatedPressable } from './AnimatedPressable';
 import { operationColors } from '../theme/tokens';
+import { cardShadow } from '../theme/shadow';
 import type { Operation } from '../types/game';
 
 type OperationButtonProps = {
@@ -53,17 +54,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.18,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
+    ...cardShadow({ elevation: 6, opacity: 0.18, radius: 8 }),
   },
   symbol: {
     fontSize: 52,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Platform, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnimatedPressable } from '../components/AnimatedPressable';
 import { OperationButton } from '../components/OperationButton';
@@ -8,6 +8,7 @@ import { getTopScores } from '../storage/scoresRepository';
 import { isOperationLocked } from '../purchases/entitlements';
 import { usePurchase } from '../purchases/PurchaseContext';
 import { light, operationColors } from '../theme/tokens';
+import { cardShadow } from '../theme/shadow';
 import type { HomeScreenProps } from '../navigation/types';
 import type { Operation, ScoreEntry } from '../types/game';
 
@@ -140,17 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: light.surface,
     borderWidth: 2,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.12,
-        shadowRadius: 6,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    ...cardShadow({ elevation: 3, opacity: 0.12, radius: 6, offsetHeight: 4 }),
   },
   topScoreIcon: {
     fontSize: 30,

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Platform, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { AnimatedPressable } from './AnimatedPressable';
+import { cardShadow } from '../theme/shadow';
 
 type AnswerButtonProps = {
   value: number;
@@ -37,17 +38,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.16,
-        shadowRadius: 6,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    ...cardShadow({ elevation: 4, opacity: 0.16, radius: 6 }),
   },
   disabled: {
     opacity: 0.4,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnimatedPressable } from '../components/AnimatedPressable';
 import { AnswerButton } from '../components/AnswerButton';
@@ -8,10 +8,9 @@ import { StreakIndicator } from '../components/StreakIndicator';
 import { NameEntryModal } from '../components/NameEntryModal';
 import { useGameEngine } from '../game/useGameEngine';
 import { choiceColors, light, operationColors } from '../theme/tokens';
+import { cardShadow } from '../theme/shadow';
 import type { GameScreenProps } from '../navigation/types';
 import type { ScoreEntry } from '../types/game';
-
-const GAME_DURATION_MS = 60000;
 
 export function GameScreen({ navigation, route }: GameScreenProps) {
   const { operation } = route.params;
@@ -65,7 +64,7 @@ export function GameScreen({ navigation, route }: GameScreenProps) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topBar}>
-        <TimerBar timeLeft={engine.timeLeft} duration={GAME_DURATION_MS} />
+        <TimerBar timeLeft={engine.timeLeft} duration={engine.duration} />
         <View style={styles.statsRow}>
           <Text testID="score-value" style={[styles.score, { color: operationColors[operation] }]}>
             {engine.score}
@@ -177,17 +176,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.15,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    ...cardShadow({ elevation: 3, opacity: 0.15, radius: 4 }),
   },
   restartButton: {
     backgroundColor: '#8B95A1',
@@ -252,17 +241,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingVertical: 16,
     paddingHorizontal: 40,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.18,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
+    ...cardShadow({ elevation: 6, opacity: 0.18, radius: 8 }),
   },
   primaryButtonLabel: {
     color: '#FFFFFF',

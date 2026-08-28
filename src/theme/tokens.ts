@@ -30,16 +30,3 @@ export const light: ColorTokens = {
   accent: '#5B4FCF',
   border: '#E6E1D6',
 };
-
-export const dark: ColorTokens = {
-  background: '#161B22',
-  surface: '#1F2530',
-  textPrimary: '#F0F5F1',
-  textSecondary: '#AEC0BB',
-  success: '#3FC79A',
-  error: '#FF8A7C',
-  accent: '#9C93F5',
-  border: '#2A313C',
-};
-
-export const tokens = { light, dark };

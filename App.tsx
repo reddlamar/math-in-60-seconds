@@ -4,8 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
-import { ThemeProvider } from './src/context/ThemeContext';
-import { SettingsProvider } from './src/context/SettingsContext';
 import { PurchaseProvider } from './src/purchases/PurchaseContext';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -35,14 +33,10 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <SettingsProvider>
-          <PurchaseProvider>
-            <RootNavigator />
-            <StatusBar style="auto" />
-          </PurchaseProvider>
-        </SettingsProvider>
-      </ThemeProvider>
+      <PurchaseProvider>
+        <RootNavigator />
+        <StatusBar style="auto" />
+      </PurchaseProvider>
       {isSplashVisible && (
         <View style={styles.splash} onLayout={onSplashLayout}>
           <Image

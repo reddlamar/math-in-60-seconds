@@ -11,6 +11,7 @@ export type UseGameEngineResult = {
   score: number;
   streak: number;
   timeLeft: number;
+  duration: number;
   status: GameStatus;
   start: () => void;
   submitAnswer: (value: number) => void;
@@ -72,6 +73,7 @@ export function useGameEngine(
     score: gameState.score,
     streak: gameState.streak,
     timeLeft: timer.timeLeft,
+    duration: GAME_DURATION_MS,
     status,
     start,
     submitAnswer,
