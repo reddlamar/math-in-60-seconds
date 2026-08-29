@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.reddlamar.mathin60seconds",
+      "bundleIdentifier": "com.reddlamar.sunlitmath",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -16,7 +16,7 @@
     "android": {
       "icon": "./assets/icon-android.png",
       "predictiveBackGestureEnabled": false,
-      "package": "com.reddlamar.mathin60seconds",
+      "package": "com.reddlamar.sunlitmath",
       "permissions": [
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ]
