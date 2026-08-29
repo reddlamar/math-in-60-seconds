@@ -40,11 +40,11 @@
       ],
       "expo-iap"
     ],
+    "owner": "lredd",
     "extra": {
       "eas": {
-        "projectId": "10ed2607-4f20-45bd-a08a-00976efc506a"
+        "projectId": "18cad5e0-fa44-4178-86e3-6e6737327c33"
       }
-    },
-    "owner": "lredd"
+    }
   }
 }
