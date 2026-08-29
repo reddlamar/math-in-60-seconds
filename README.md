@@ -21,4 +21,4 @@ Available for iOS and Android.
 Having trouble with the app or found a bug? Reach out:
 
 - Email: [reddlamar1@gmail.com](mailto:reddlamar1@gmail.com)
-- [Open an issue](https://github.com/reddlamar/math-in-60-seconds/issues)
+- [Open an issue](https://github.com/reddlamar/sunlit-math/issues)
